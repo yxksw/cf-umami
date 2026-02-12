@@ -165,3 +165,8 @@ dist
 .env*
 !.env.example
 .wrangler/
+
+
+umami-3.0.3
+
+.trae

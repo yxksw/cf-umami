@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS pageviews (
+	pathname TEXT PRIMARY KEY,
+	views INTEGER NOT NULL
+);

@@ -8,11 +8,22 @@
 	"main": "src/index.ts",
 	"compatibility_date": "2026-02-10",
 	"observability": {
-		"enabled": true
+		"enabled": false
 	},
 	"compatibility_flags": [
 		"nodejs_compat"
-	]
+	],
+	"d1_databases": [
+		{
+			"binding": "cf_umami",
+			"database_name": "cf-umami",
+			"database_id": "4cfa8a99-9749-428b-8e5d-0fab248bb9d2",
+			"remote": false
+		}
+	],
+	"vars": {
+		"TRACKED_SITE_HOST": "2x.nz"
+	}
 	/**
 	 * Smart Placement
 	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
