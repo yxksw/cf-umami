@@ -17,12 +17,12 @@
 		{
 			"binding": "cf_umami",
 			"database_name": "cf-umami",
-			"database_id": "4cfa8a99-9749-428b-8e5d-0fab248bb9d2",
+			"database_id": "22555c4c-b4bb-422e-8b34-70e43da6bdf0",
 			"remote": false
-		}
+		},
 	],
 	"vars": {
-		"TRACKED_SITE_HOST": "2x.nz"
+		"TRACKED_SITE_HOST": "cofe.381359.xyz"
 	}
 	/**
 	 * Smart Placement
