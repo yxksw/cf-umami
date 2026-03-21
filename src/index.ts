@@ -74,12 +74,9 @@ function trackerJsResponse(request: Request): Response {
 }
 
 async function ensureSchema(env: Env): Promise<void> {
-	await env.cf_umami.exec(`
-		CREATE TABLE IF NOT EXISTS pageviews (
-			pathname TEXT PRIMARY KEY,
-			views INTEGER NOT NULL
-		);
-	`);
+	await env.cf_umami.exec(
+		`CREATE TABLE IF NOT EXISTS pageviews (pathname TEXT PRIMARY KEY, views INTEGER NOT NULL);`
+	);
 }
 
 export default {
