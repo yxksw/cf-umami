@@ -23,8 +23,14 @@ try {
   let sqlContent = '';
   
   data.forEach(item => {
+    // 确保 pathname 以 / 开头
+    let pathname = item.pathname;
+    if (!pathname.startsWith('/')) {
+      pathname = '/' + pathname;
+    }
+    
     // 简单的 SQL 转义：将单引号替换为两个单引号
-    const safePath = item.pathname.replace(/'/g, "''");
+    const safePath = pathname.replace(/'/g, "''");
     const views = Number(item.pageviews) || 0;
     
     sqlContent += `INSERT INTO pageviews (pathname, views) VALUES ('${safePath}', ${views}) ON CONFLICT(pathname) DO UPDATE SET views = excluded.views;\n`;

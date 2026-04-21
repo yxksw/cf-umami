@@ -87,7 +87,7 @@ export default {
 			return trackerJsResponse(request);
 		}
 
-		if (request.method === 'OPTIONS' && url.pathname === '/send') {
+		if (request.method === 'OPTIONS' && (url.pathname === '/send' || url.pathname === '/batch')) {
 			const origin = request.headers.get('Origin');
 			let allowOrigin: string | null = null;
 			if (origin) {
@@ -152,6 +152,52 @@ export default {
 				.first<{ views: number }>();
 
 			return jsonResponse({ pathname, views: row?.views ?? 0 });
+		}
+
+		if (request.method === 'POST' && url.pathname === '/batch') {
+			await ensureSchema(env);
+
+			let body: unknown;
+			try {
+				body = await request.json();
+			} catch {
+				return jsonResponse({ ok: false, error: 'invalid_json' }, { status: 400 });
+			}
+
+			if (!Array.isArray(body)) {
+				return jsonResponse({ ok: false, error: 'expected_array' }, { status: 400 });
+			}
+
+			// 验证并规范化所有 pathname
+			const pathnames: string[] = [];
+			for (const item of body) {
+				const pathname = normalizePathname(item);
+				if (!pathname) {
+					return jsonResponse({ ok: false, error: 'invalid_pathname' }, { status: 400 });
+				}
+				pathnames.push(pathname);
+			}
+
+			// 批量查询
+			const results: number[] = [];
+			for (const pathname of pathnames) {
+				const row = await env.cf_umami
+					.prepare('SELECT views FROM pageviews WHERE pathname = ?')
+					.bind(pathname)
+					.first<{ views: number }>();
+				results.push(row?.views ?? 0);
+			}
+
+			const origin = request.headers.get('Origin');
+			let allowOrigin: string | null = null;
+			if (origin) {
+				try {
+					const originUrl = new URL(origin);
+					if (originUrl.host === env.TRACKED_SITE_HOST) allowOrigin = originUrl.origin;
+				} catch {}
+			}
+
+			return jsonResponse(results, { status: 200, headers: buildCorsHeaders(allowOrigin) });
 		}
 
 		return new Response('Not Found', { status: 404 });
